@@ -10,11 +10,13 @@ import itertools
 import json
 import re
 import numpy as np
+import concurrent.futures
 # Initialize OpenAI client
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def codeLLM(text: str) -> str:
+
     """Process raw code content to enhance it for RAG retrieval.
 
     Args:
@@ -78,6 +80,7 @@ def codeLLM(text: str) -> str:
     except Exception as e:
         print(f"Error processing content: {str(e)}")
         return text
+
 def slideLLM(text: str) -> str:
     """Process raw content from lecture slides to enhance it for RAG retrieval.
     
@@ -138,7 +141,6 @@ def slideLLM(text: str) -> str:
     except Exception as e:
         print(f"Error processing content: {str(e)}")
         return text
-
 
 def pdf2content(file_path: str) -> List[Dict[str, Any]]:
     """Process a PDF file and extract content and metadata from each page.
@@ -237,26 +239,34 @@ def file2content(file_paths: List[str]) -> List[Dict[str, Any]]:
     
     return all_content
 
-def get_enhance_content(content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Process a list of extracted content items using GPT-4"""
-    enhanced_content = []
+def get_enhance_content(content_list: List[Dict[str, Any]]) -> List[str]:
+    """Process content using appropriate LLM based on file format.
     
-    for item in content_list:
-        # if pdf call slideLLM:
-        if item['file_format'] == 'pdf':
+    Args:
+        content_list: List of dictionaries containing content and metadata
+        
+    Returns:
+        List of enhanced content strings
+    """
+    if not content_list:
+        return []
 
-            content = slideLLM(item['raw_text'])
-            print("Completed page:", item['page_number'])
-            enhanced_content.append(content)
-        # if notebook call codeLLM:
-        elif item['file_format'] == 'ipynb':
+    def process_single_item(content_dict: Dict[str, Any]) -> str:
+        content = content_dict.get('raw_text', '')
+        file_format = content_dict.get('file_format', '')
+        
+        if not content:
+            return ''
+            
+        if file_format == 'ipynb':
+            return codeLLM(content)
+        else:  # default to pdf
+            return slideLLM(content)
 
-            content = codeLLM(item['raw_text'])
-            print("Completed cell:", item['cell_number'])
-            enhanced_content.append(content)
-        else:
-            print("Unknown file format")
-
+    # Process items in parallel
+    with concurrent.futures.ThreadPoolExecutor(max_workers=min(len(content_list), 5)) as executor:
+        enhanced_content = list(executor.map(process_single_item, content_list))
+    
     return enhanced_content
 
 def chunk_content(enhanced_content: List[str], window_size: int, overlap: int = 1) -> List[str]:
@@ -294,7 +304,6 @@ def embed_text(text: str) -> np.ndarray:
 def chuncks2embeddings(chunks: List[str]) -> List[np.ndarray]:
     """Generate embeddings for a list of text chunks"""
     return [embed_text(chunk) for chunk in chunks]
-
 
 def process_documents(file_paths: List[str]) -> List[Dict[str, Any]]:
     """Main function to process multiple documents"""
