@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import itertools
 import json
 import re
+import numpy as np
 # Initialize OpenAI client
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -117,7 +118,7 @@ def slideLLM(text: str) -> str:
         """
 
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-3.5-turbo",
             messages=[
                 {
                     "role": "system",
@@ -287,8 +288,8 @@ def chunk_content(enhanced_content: List[str], window_size: int, overlap: int = 
 
 def embed_text(text: str) -> np.ndarray:
     """Generate embeddings for a given text using OpenAI's text-embedding-ada-002"""
-    response = openai.Embedding.create(input=text, model="text-embedding-ada-002")
-    return np.array(response['data'][0]['embedding'])
+    response = client.embeddings.create(input=text, model="text-embedding-ada-002")
+    return np.array(response.data[0].embedding)
 
 def chuncks2embeddings(chunks: List[str]) -> List[np.ndarray]:
     """Generate embeddings for a list of text chunks"""
@@ -352,6 +353,25 @@ def process_documents(file_paths: List[str]) -> List[Dict[str, Any]]:
     for chunk in chunks:
         print(chunk)
         print("\n")
+    
+
+    # Step 4: get embeddings from chunks
+    print("\nGenerating embeddings from chunks...")
+    embeddings = chuncks2embeddings(chunks)
+    print("Successfully Generated embeddings")
+
+    # Perform similarity search
+    print("\nPerforming similarity search...")
+    query = "What is a retrieval augmented generation?"
+    query_embedding = embed_text(query)
+    similarity_scores = np.dot(embeddings, query_embedding.T)
+
+    most_similar_index = np.argmax(similarity_scores)
+    most_similar_chunk = chunks[most_similar_index]
+    most_similar_doc = extracted_content[most_similar_index]
+
+    print(f"Most similar chunk: {most_similar_chunk}")
+    print(f"Most similar document: {most_similar_doc}")
 
     return None
 
