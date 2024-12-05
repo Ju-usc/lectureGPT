@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Project specific
+extracted_content.txt
+*.log
+.DS_Store
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
