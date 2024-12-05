@@ -159,6 +159,7 @@ def pdf2content(file_path: str) -> List[Dict[str, Any]]:
             # Extract document-level metadata
             doc_info = pdf_reader.metadata
             doc_metadata = {
+                "file_path": file_path,
                 "title": doc_info.get("/Title", ""),
                 "author": doc_info.get("/Author", ""),
                 "subject": doc_info.get("/Subject", ""),
@@ -204,6 +205,7 @@ def colab2content(file_path: str) -> List[Dict[str, Any]]:
                 continue
 
             content.append({
+                'file_path': file_path,
                 'file_format': 'ipynb',
                 'cell_type': cell_type,
                 'raw_text': raw_text,
