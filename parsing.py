@@ -220,25 +220,24 @@ def colab2content(file_path: str) -> List[Dict[str, Any]]:
 
 def file2content(file_paths: List[str]) -> List[Dict[str, Any]]:
     """Extract content from multiple documents without AI processing"""
-    all_content = []
+    print(f"Processing files: {file_paths}")
     
+    all_content = []
     for file_path in file_paths:
-        if not os.path.exists(file_path):
-            print(f"File not found: {file_path}")
-            continue
-            
-        file_ext = os.path.splitext(file_path)[1].lower()
-        
-        if file_ext == '.pdf':
+        print(f"Processing file: {file_path}")
+        if file_path.endswith('.pdf'):
             content = pdf2content(file_path)
-        elif file_ext == '.ipynb':
+            print(f"PDF content length: {len(content)}")
+        elif file_path.endswith('.ipynb'):
             content = colab2content(file_path)
+            print(f"Notebook content length: {len(content)}")
         else:
-            print(f"Unsupported file type: {file_ext}")
+            print(f"Unsupported file type: {file_path}")
             continue
             
         all_content.extend(content)
     
+    print(f"Total content items: {len(all_content)}")
     return all_content
 
 def get_enhance_content(content_list: List[Dict[str, Any]]) -> List[str]:
@@ -353,7 +352,6 @@ def process_documents(file_paths: List[str]) -> List[Dict[str, Any]]:
         print("\n")
         print(f"Enhanced Text: {enhanced_content[i]}")
         print("\n")
-
 
 
     # Step 3: get chunks from enhanced content
