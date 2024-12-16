@@ -86,7 +86,122 @@ pip install -r requirements.txt
   4. Query Processing
   5. Answer Generation
 
+### Vector Store Management
 
+#### `VectorStore`
+- Manages document storage and retrieval
+- Handles saving/loading of vector database
+- Supports direct text updates and file-based updates
+- Key methods:
+  * `add_documents`: Add new documents to store
+  * `save`: Save vector store to disk
+  * `load`: Load vector store from disk
+  * `get_stored_files`: List stored documents
+
+### QA Generation
+
+#### `QAGenerator`
+- Main interface for question answering
+- Manages conversation history and context
+- Supports knowledge base updates
+- Key methods:
+  * `generate_answer`: Generate answers from questions
+  * `add_documents`: Add documents to knowledge base
+  * `add_text_to_knowledge`: Directly add text content
+  * `generate_knowledge_suggestion`: Generate suggestions for missing knowledge
+
+### Web Interface
+
+#### Streamlit App
+- Interactive web interface for Q&A
+- Student and instructor views
+- Features:
+  * Real-time question answering
+  * Knowledge base management
+  * Content suggestions for unanswered questions
+  * Interactive knowledge updates
+  * System prompt configuration
+
+## Usage
+
+### Starting the App
+```bash
+streamlit run streamlit_app.py
+```
+
+### Student View
+- Ask questions about lecture content
+- View source references for answers
+- Track conversation history
+
+### Instructor View
+1. Knowledge Base Management
+   - Upload lecture materials (PDF/Jupyter)
+   - View stored documents
+   - Monitor knowledge base status
+
+2. Q&A Monitoring
+   - Review student questions
+   - See answer sources
+   - Get suggestions for missing knowledge
+
+3. Knowledge Updates
+   - Add missing information
+   - Update system responses
+   - Configure QA behavior
+
+## System Components
+
+### 1. Content Processing (`parsing.py`)
+- Extracts content from files
+- Enhances content using LLMs
+- Prepares text for vectorization
+
+### 2. Vector Store (`vector_store.py`)
+- Manages document embeddings
+- Handles persistence
+- Provides similarity search
+
+### 3. Retriever (`retriever.py`)
+- Implements retrieval logic
+- Ranks and filters results
+- Manages context window
+
+### 4. QA Generator (`generator.py`)
+- Orchestrates QA process
+- Manages conversation
+- Handles knowledge updates
+
+### 5. Web Interface (`streamlit_app.py`)
+- Provides user interface
+- Manages session state
+- Handles file uploads
+
+## Configuration
+
+### Environment Variables
+Required in `.env`:
+```
+OPENAI_API_KEY=your_api_key
+```
+
+### System Settings
+- Vector store path: "lecture_db" (default)
+- Chunk size: 1000 characters
+- Chunk overlap: 200 characters
+- Temperature: 0 (for consistent answers)
+
+## Dependencies
+```
+streamlit
+openai>=1.0.0
+langchain
+faiss-cpu
+python-dotenv
+pypdf2
+python-pptx
+numpy
+```
 
 ## Notes
 
@@ -95,19 +210,7 @@ pip install -r requirements.txt
 - Skips image-containing cells
 - Uses GPT-3.5-turbo and GPT-4 for content enhancement
 - Generates embeddings for vector search
-
-## Requirements
-```
-openai>=1.0.0
-Pillow>=10.0.0
-PyPDF2>=3.0.0
-pdf2image>=1.16.3
-python-dotenv>=1.0.0
-```
-
-## Environment Setup
-1. Create a `.env` file in the root directory
-2. Add your OpenAI API key:
-```
-OPENAI_API_KEY=your_api_key_here
-```
+- Uses OpenAI's text-embedding-ada-002 for embeddings
+- Supports incremental knowledge base updates
+- Maintains conversation history
+- Provides source references for answers
