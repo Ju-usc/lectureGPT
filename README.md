@@ -2,6 +2,47 @@
 
 A Retrieval-Augmented Generation (RAG) system that processes lecture materials and explores ways to improve answer accuracy through dynamic knowledge updates.
 
+## Quick Start Guide
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/Ju-usc/lectureGPT.git
+   cd lectureGPT
+   ```
+
+2. **Set Up Environment**
+   ```bash
+   # Install required packages
+   pip install -r requirements.txt
+
+   # Create .env file and add your OpenAI API key
+   echo "OPENAI_API_KEY=your_api_key_here" > .env
+   ```
+   Replace `your_api_key_here` with your actual OpenAI API key from https://platform.openai.com/api-keys
+
+3. **Run the Application**
+   ```bash
+   # Start the Streamlit app
+   streamlit run streamlit_app.py
+   ```
+   The app will open in your default web browser at http://localhost:8501
+
+4. **Upload Course Materials**
+   - Click the "Upload Files" button
+   - Select your lecture materials (PDFs or Jupyter notebooks)
+   - Wait for the processing to complete
+
+5. **Start Asking Questions**
+   - Type your question in the input box
+   - Click "Ask" or press Enter
+   - The system will provide answers based on the uploaded course materials
+
+## Troubleshooting
+
+- If you see an API key error, make sure your `.env` file is properly set up with the correct OpenAI API key
+- If the app doesn't start, ensure all dependencies are installed correctly using `pip install -r requirements.txt`
+- For file upload issues, check that your files are in PDF or Jupyter notebook format
+
 ## Overview
 
 This project combines:
