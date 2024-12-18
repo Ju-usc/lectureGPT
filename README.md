@@ -1,10 +1,27 @@
 # LectureGPT
 
-A Retrieval-Augmented Generation (RAG) system for processing and querying lecture materials.
+A Retrieval-Augmented Generation (RAG) system that processes lecture materials and explores ways to improve answer accuracy through dynamic knowledge updates.
 
 ## Overview
 
-This system processes lecture materials (PDFs and Jupyter notebooks) to create an AI-powered question-answering system. It extracts, enhances, and embeds content for efficient retrieval.
+This project combines:
+- Basic RAG system functionality for lecture content
+- Experimental features for knowledge base updates
+- Simple mechanisms to reduce AI hallucination
+- Tools for identifying and filling knowledge gaps
+- Instructor-specific AI configuration options
+- Teaching style customization capabilities
+
+## Features
+
+- Process lecture materials (PDFs and Jupyter notebooks)
+- Update knowledge base based on feedback
+- Track sources for better accuracy
+- Identify potential knowledge gaps
+- Basic confidence checking for responses
+- Adapt AI responses to match teaching preferences
+- Configure system behavior for specific courses
+
 
 ## Installation
 
@@ -121,6 +138,7 @@ pip install -r requirements.txt
   * Content suggestions for unanswered questions
   * Interactive knowledge updates
   * System prompt configuration
+  * AI behavior customization for teaching style
 
 ## Usage
 
@@ -149,6 +167,7 @@ streamlit run streamlit_app.py
    - Add missing information
    - Update system responses
    - Configure QA behavior
+   - Customize AI teaching style
 
 ## System Components
 
@@ -171,11 +190,13 @@ streamlit run streamlit_app.py
 - Orchestrates QA process
 - Manages conversation
 - Handles knowledge updates
+- Customizes AI behavior for teaching style
 
 ### 5. Web Interface (`streamlit_app.py`)
 - Provides user interface
 - Manages session state
 - Handles file uploads
+- Supports AI behavior customization
 
 ## Configuration
 
@@ -214,3 +235,4 @@ numpy
 - Supports incremental knowledge base updates
 - Maintains conversation history
 - Provides source references for answers
+- Customizable AI behavior for teaching style through system prompt configuration
