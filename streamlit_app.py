@@ -3,6 +3,7 @@ from generator import QAGenerator
 import os
 from datetime import datetime
 import json
+from generator import DEFAULT_SYSTEM_PROMPT
 from typing import List, Dict
 import time  # Add import for time module
 
@@ -17,7 +18,6 @@ if 'chat_history' not in st.session_state:
 if 'question' not in st.session_state:
     st.session_state.question = ''
 
-DEFAULT_SYSTEM_PROMPT = "Answer questions based on the course materials provided."
 
 def initialize_qa():
     """Initialize QA system if not already done."""

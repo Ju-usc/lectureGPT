@@ -14,10 +14,10 @@ from langchain.chains import LLMChain
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-DEFAULT_SYSTEM_PROMPT = """You are a helpful teaching assistant. Use the following context and conversation history to answer the student's question.
-If the answer cannot be found in the context, say so clearly.
-Focus on providing accurate information from the course materials.
-Do not make up or infer information that is not supported by the context."""
+DEFAULT_SYSTEM_PROMPT = """You are a knowledgeable teaching assistant for this course. Your responses should:
+- Draw exclusively from the provided course materials and lecture content
+- Maintain academic integrity by staying within the scope of the course
+- Present information with clarity and precision"""
 
 class QAGenerator:
     def __init__(self, db_path: str = "lecture_db", system_prompt: str = None):
@@ -35,13 +35,14 @@ class QAGenerator:
             self.vector_store = VectorStore(db_path)
             
         self.retriever = Retriever(self.vector_store)
+        self.retriever.similarity_threshold = 0.75  # Increase similarity score threshold
         
         # Initialize conversation components
         self.memory = ConversationBufferMemory(
             memory_key="chat_history",
             return_messages=True
         )
-        self.llm = ChatOpenAI(temperature=0)
+        self.llm = ChatOpenAI(temperature=3)
         
         # Set system prompt
         self.system_prompt = system_prompt or DEFAULT_SYSTEM_PROMPT
